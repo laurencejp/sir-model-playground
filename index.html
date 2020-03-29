@@ -7,6 +7,19 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     </head>
     <body>
+        <div class="container">
+            <h1 class="text-center">SIR Model Playground</h1>
+            <p class="text-center">This is a simulator to visualize the spread
+            of an infectious disease using the <a
+            href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#The_SIR_model">SIR
+            model</a>. Set the parameters in
+            the input boxes below the charts and press 'Start' to run the
+            simulation. The line chart represents the number of people in each
+            of the three compartments on any given day and the scatter plot
+            represents the location of people within a grid-like city on the
+            current day. The simulation will stop when the 'Stop' button is
+            pressed or when the disease has been irradicated.</p>
+        </div>
         <div class="row">
             <div class="col-sm">
                 <canvas id="sir-chart"></canvas>
@@ -19,43 +32,62 @@
             <div class="row">
                 <div class="col-sm">
                     <div class="form-group">
-                        <label for="population">Population</label>
+                        <label for="population">Population<span
+                        class="text-muted"> - The number of people in the
+                        city.</span></label>
                         <input class="form-control" type="number" name="population" id="population">
                     </div>
                     <div class="form-group">
-                        <label for="recover-after">Recover After</label>
+                        <label for="recover-after">Recover After<span
+                        class="text-muted"> - The number of days after which
+                        someone with the virus recovers and can no longer pass
+                        it to others.</span></label>
                         <input class="form-control" type="number" name="recover-after" id="recover-after">
                     </div>
                     <div class="form-group">
-                        <label for="time-interval">Time Interval</label>
+                        <label for="time-interval">Time Interval<span
+                        class="text-muted"> - The number of milliseconds to wait before
+                        progressing the model to the next day.</span></label>
                         <input class="form-control" type="number" name="time-interval" id="time-interval">
                     </div>
                     <div class="form-group">
-                        <label for="city-size">City size</label>
+                        <label for="city-size">City size<span
+                        class="text-muted"> - The dimensions of square
+                        representing the city. Each person occupies a 1x1 cell
+                        within the city.</span></label>
                         <input class="form-control mb-2" type="number" name="city-size" id="city-size">
                     </div>
                 </div>
                 <div class="col-sm">
                     <div class="form-group">
-                        <label for="daily-movement">Daily Movement</label>
+                        <label for="daily-movement">Daily Movement<span
+                        class="text-muted"> - The maximum number of cells a
+                        single person can move in either direction per day.</span></label>
                         <input class="form-control" type="number" name="daily-movement" id="daily-movement">
                     </div>
                     <div class="form-group">
-                        <label for="infection-radius">Infection Radius</label>
+                        <label for="infection-radius">Infection Radius<span
+                        class="text-muted"> - The radius around each person
+                        within which others are at risk of infection.</span></label>
                         <input class="form-control" type="number" name="infection-radius" id="infection-radius">
                     </div>
                     <div class="form-group">
-                        <label for="contact-infection-days">Contact Infection Days</label>
+                        <label for="contact-infection-days">Contact Infection
+                        Days<span class="text-muted"> - The number of days a
+                        person must spend within the infection radius of an
+                        infected person to contract the virus.</span></label>
                         <input class="form-control" type="number" name="contact-infection-days" id="contact-infection-days">
                     </div>
                     <div class="form-group">
-                        <label for="initial-cases">Initial Cases</label>
+                        <label for="initial-cases">Initial Cases<span
+                        class="text-muted"> - The number of randomly assigned
+                        initial cases of the virus.</span></label>
                         <input class="form-control" type="number" name="initial-cases" id="initial-cases">
                     </div>
                 </div>
             </div>
-            <button class="btn btn-success" id="start">Start</button>
-            <button class="btn btn-danger" id="stop">Stop</button>
+            <button class="btn btn-success btn-block" id="start">Start</button>
+            <button class="btn btn-danger btn-block" id="stop">Stop</button>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>

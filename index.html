@@ -3,31 +3,47 @@
     <head>
         <meta charset="utf-8"/>
         <title>SIR Model Playground</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     </head>
     <body>
-        <canvas id="chart"></canvas>
-        <label for="population">Population</label>
-        <input type="number" name="population" id="population">
-
-        <label for="infection-rate">Infection Rate</label>
-        <input type="number" name="infection-rate" id="infection-rate">
-
-        <label for="recover-after">Recover After</label>
-        <input type="number" name="recover-after" id="recover-after">
-
-        <label for="time-interval">Time Interval</label>
-        <input type="number" name="time-interval" id="time-interval">
-
-        <br>
-        <br>
-        <button id="start">Start</button>
-        <button id="stop">Stop</button>
+        <div class="row">
+            <div class="col-sm">
+                <canvas id="sir-chart"></canvas>
+            </div>
+            <div class="col-sm">
+                <canvas id="city-chart"></canvas>
+            </div>
+        </div>
+        <div class="container">
+            <div class="form-group">
+                <label for="population">Population</label>
+                <input class="form-control" type="number" name="population" id="population">
+            </div>
+            <div class="form-group">
+                <label for="infection-rate">Infection Rate</label>
+                <input class="form-control" type="number" name="infection-rate" id="infection-rate">
+            </div>
+            <div class="form-group">
+                <label for="recover-after">Recover After</label>
+                <input class="form-control" type="number" name="recover-after" id="recover-after">
+            </div>
+            <div class="form-group">
+                <label for="time-interval">Time Interval</label>
+                <input class="form-control" type="number" name="time-interval" id="time-interval">
+            </div>
+            <div class="form-group">
+                <label for="city-size">City size</label>
+                <input class="form-control mb-2" type="number" name="city-size" id="city-size">
+            </div>
+            <button class="btn btn-success" id="start">Start</button>
+            <button class="btn btn-danger" id="stop">Stop</button>
+        </div>
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
         <script>
-        var ctx = document.getElementById('chart').getContext('2d');
-        Chart.defaults.global.elements.point.radius = 0;
-        var chart = new Chart(ctx, {
+        var ctx = document.getElementById('sir-chart').getContext('2d');
+        //Chart.defaults.global.elements.point.radius = 0;
+        var sirChart = new Chart(ctx, {
             type: 'line',
             data: data = {
                 labels: [],
@@ -59,44 +75,104 @@
 				hover: {
 					mode: 'nearest',
 					intersect: true
-				}
+				},
+                elements: {
+                    point: {
+                        radius: 0
+                    }
+                },
+                animation: {
+                    duration: 0
+                }
             }
         });
+
+        var ctx = document.getElementById('city-chart').getContext('2d');
+        var cityChart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Susceptible',
+                    backgroundColor: '#d4db0a',
+                    borderColor: '#d4db0a',
+                    data: []
+                }, {
+                    label: 'Infectious',
+                    backgroundColor: '#b80c09',
+                    borderColor: '#b80c09',
+                    data: []
+                }, {
+                    label: 'Recovered',
+                    backgroundColor: '#09b734',
+                    borderColor: '#09b734',
+                    data: []
+                }]
+            },
+            options: {
+                animation: {
+                    duration: 0
+                }
+            }
+        });
+
         var population = [];
         var infectionRate;
         var recoverAfter;
         var timeInterval;
-        var timer;
+        var citySize;
         var day = 1;
+        var timer;
+
         document.getElementById("start").addEventListener("click", function(){
             this.disabled = true;
-            chart.data.labels = [];
-            chart.data.datasets[0].data = [];
-            chart.data.datasets[1].data = [];
-            chart.data.datasets[2].data = [];
+            sirChart.data.labels = [];
+            sirChart.data.datasets[0].data = [];
+            sirChart.data.datasets[1].data = [];
+            sirChart.data.datasets[2].data = [];
             population = [];
             day = 1;
-
-            for (var i = 0; i < parseInt(document.getElementById("population").value, 10); ++i) {
-                population.push({"compartment": 0});
-            }
+            
             infectionRate = parseInt(document.getElementById("infection-rate").value, 10);
             recoverAfter = parseInt(document.getElementById("recover-after").value, 10);
             timeInterval = parseInt(document.getElementById("time-interval").value, 10);
+            citySize = parseInt(document.getElementById("city-size").value, 10);
+            cityChart.options.scales.xAxes[0].ticks.max = citySize;
+            cityChart.options.scales.yAxes[0].ticks.max = citySize;
+            for (var i = 0; i < parseInt(document.getElementById("population").value, 10); ++i) {
+                population.push({"compartment": 0, "x": Math.floor(Math.random() * citySize), "y": Math.floor(Math.random() * citySize)});
+                cityChart.data.datasets[0].data.push({"x": population[i].x, "y": population[i].y});
+            }
+            cityChart.update();
 
-            chart.data.labels.push(0);
-            chart.data.datasets[0].data.push(population.length);
-            chart.data.datasets[1].data.push(0);
-            chart.data.datasets[2].data.push(1);
-            chart.update();
+            sirChart.data.labels.push(0);
+            sirChart.data.datasets[0].data.push(population.length);
+            sirChart.data.datasets[1].data.push(0);
+            sirChart.data.datasets[2].data.push(1);
+            sirChart.update();
             timer = setInterval(progress, timeInterval);
         })
+
         document.getElementById("stop").addEventListener("click", function(){
             document.getElementById("start").disabled = false;
             clearInterval(timer);
         });
+
         function progress(){
+            Math.random()
+            cityChart.data.datasets[0].data = [];
+            cityChart.data.datasets[1].data = [];
+            cityChart.data.datasets[2].data = [];
             population.forEach(function(person, index){
+                do {
+                    var newX = person.x + (Math.floor(Math.random() * 5)) - 2
+                    var newY = person.y + (Math.floor(Math.random() * 5)) - 2
+                } while (newX < 0 || newX >= citySize || newY < 0 || newY >= citySize)
+                //console.log(newX + ", " + newY);
+                population[index].x = newX;
+                population[index].y = newY;
+                cityChart.data.datasets[person.compartment].data.push({"x": newX, "y": newY});
+                cityChart.update();
+
                 if (person["compartment"] == 0) {
                     var rand = Math.floor(Math.random() * 100);
                     if (rand < infectionRate) {
@@ -111,16 +187,16 @@
                     }
                 }
             });
-            chart.data.labels.push(day);
+            sirChart.data.labels.push(day);
             day += 1;
             var count = {0: 0, 1: 0, 2: 0};
             population.forEach(function(person){
                 count[person["compartment"]] = (count[person["compartment"]]) + 1
             });
-            chart.data.datasets[0].data.push(count[0]);
-            chart.data.datasets[1].data.push(count[1]);
-            chart.data.datasets[2].data.push(count[2]);
-            chart.update();
+            sirChart.data.datasets[0].data.push(count[0]);
+            sirChart.data.datasets[1].data.push(count[1]);
+            sirChart.data.datasets[2].data.push(count[2]);
+            sirChart.update();
             if (count[2] == population.length) {
                 document.getElementById("start").disabled = false;
                 clearInterval(timer);

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>SIR Model Playground</title>
+    </head>
+    <body>
+        <canvas id="chart"></canvas>
+        <label for="population">Population</label>
+        <input type="number" name="population" id="population">
+
+        <label for="infection-rate">Infection Rate</label>
+        <input type="number" name="infection-rate" id="infection-rate">
+
+        <label for="recover-after">Recover After</label>
+        <input type="number" name="recover-after" id="recover-after">
+
+        <br>
+        <br>
+        <button id="start">Start</button>
+        <button id="progress" disabled>Progress</button>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+        <script>
+        var ctx = document.getElementById('chart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: data = {
+                labels: [],
+                datasets: [{
+                    label: 'Susceptible',
+                    fill: false,
+                    backgroundColor: '#d4db0a',
+                    borderColor: '#d4db0a',
+                    data: []
+                }, {
+                    label: 'Infectious',
+                    fill: false,
+                    backgroundColor: '#b80c09',
+                    borderColor: '#b80c09',
+                    data: []
+                }, {
+                    label: 'Recovered',
+                    fill: false,
+                    backgroundColor: '#09b734',
+                    borderColor: '#09b734',
+                    data: []
+                }]
+            },
+            options: {}
+        });
+        var population = [];
+        var infectionRate;
+        var recoverAfter;
+        var day = 1;
+        document.getElementById("start").addEventListener("click", function(){
+            for (var i = 0; i < parseInt(document.getElementById("population").value, 10); ++i) {
+                population.push({"compartment": 0});
+            }
+            infectionRate = parseInt(document.getElementById("infection-rate").value, 10);
+            recoverAfter = parseInt(document.getElementById("recover-after").value, 10);
+
+            chart.data.labels.push(0);
+            chart.data.datasets[0].data.push(population.length);
+            chart.data.datasets[1].data.push(0);
+            chart.data.datasets[2].data.push(1);
+            chart.update();
+            document.getElementById("progress").disabled = false;
+        })
+        
+        document.getElementById("progress").addEventListener("click", function(){
+            population.forEach(function(person, index){
+                if (person["compartment"] == 0) {
+                    var rand = Math.floor(Math.random() * 100);
+                    if (rand < infectionRate) {
+                        population[index]["compartment"] = 1;
+                        population[index]["infectedDays"] = 0;
+                    }
+                } else if (person["compartment"] == 1) {
+                    if (person["infectedDays"] >= recoverAfter) {
+                        population[index]["compartment"] = 2;
+                    } else {
+                        population[index]["infectedDays"] += 1;
+                    }
+                }
+            });
+            chart.data.labels.push(day);
+            day += 1;
+            var count = {0: 0, 1: 0, 2: 0};
+            population.forEach(function(person){
+                count[person["compartment"]] = (count[person["compartment"]]) + 1
+            });
+            chart.data.datasets[0].data.push(count[0]);
+            chart.data.datasets[1].data.push(count[1]);
+            chart.data.datasets[2].data.push(count[2]);
+            chart.update();
+        });
+        </script>
+    </body>
+</html>

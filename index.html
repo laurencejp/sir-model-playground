@@ -35,55 +35,65 @@
                         <label for="population">Population<span
                         class="text-muted"> - The number of people in the
                         city.</span></label>
-                        <input class="form-control" type="number" name="population" id="population">
-                    </div>
-                    <div class="form-group">
-                        <label for="recover-after">Recover After<span
-                        class="text-muted"> - The number of days after which
-                        someone with the virus recovers and can no longer pass
-                        it to others.</span></label>
-                        <input class="form-control" type="number" name="recover-after" id="recover-after">
-                    </div>
-                    <div class="form-group">
-                        <label for="time-interval">Time Interval<span
-                        class="text-muted"> - The number of milliseconds to wait before
-                        progressing the model to the next day.</span></label>
-                        <input class="form-control" type="number" name="time-interval" id="time-interval">
+                        <input class="form-control" type="number"
+                        name="population" id="population" value="1000">
                     </div>
                     <div class="form-group">
                         <label for="city-size">City size<span
                         class="text-muted"> - The dimensions of square
                         representing the city. Each person occupies a 1x1 cell
                         within the city.</span></label>
-                        <input class="form-control mb-2" type="number" name="city-size" id="city-size">
+                        <input class="form-control mb-2" type="number"
+                        name="city-size" id="city-size" value="500">
                     </div>
-                </div>
-                <div class="col-sm">
                     <div class="form-group">
                         <label for="daily-movement">Daily Movement<span
                         class="text-muted"> - The maximum number of cells a
                         single person can move in either direction per day.</span></label>
-                        <input class="form-control" type="number" name="daily-movement" id="daily-movement">
+                        <input class="form-control" type="number"
+                        name="daily-movement" id="daily-movement" value="50">
                     </div>
                     <div class="form-group">
                         <label for="infection-radius">Infection Radius<span
                         class="text-muted"> - The radius around each person
                         within which others are at risk of infection.</span></label>
-                        <input class="form-control" type="number" name="infection-radius" id="infection-radius">
+                        <input class="form-control" type="number"
+                        name="infection-radius" id="infection-radius" value="5">
                     </div>
+                    
+                    
+                </div>
+                <div class="col-sm">
                     <div class="form-group">
                         <label for="contact-infection-days">Contact Infection
                         Days<span class="text-muted"> - The number of days a
                         person must spend within the infection radius of an
                         infected person to contract the virus.</span></label>
-                        <input class="form-control" type="number" name="contact-infection-days" id="contact-infection-days">
+                        <input class="form-control" type="number" name="contact-infection-days" id="contact-infection-days" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="recover-after">Recover After<span
+                        class="text-muted"> - The number of days after which
+                        someone with the virus recovers and can no longer pass
+                        it to others.</span></label>
+                        <input class="form-control" type="number"
+                        name="recover-after" id="recover-after" value="14">
                     </div>
                     <div class="form-group">
                         <label for="initial-cases">Initial Cases<span
                         class="text-muted"> - The number of randomly assigned
                         initial cases of the virus.</span></label>
-                        <input class="form-control" type="number" name="initial-cases" id="initial-cases">
+                        <input class="form-control" type="number"
+                        name="initial-cases" id="initial-cases" value="1">
                     </div>
+                    <div class="form-group">
+                        <label for="time-interval">Time Interval<span
+                        class="text-muted"> - The number of milliseconds to wait before
+                        progressing the model to the next day. Increase to slow
+                        down simulation.</span></label>
+                        <input class="form-control" type="number"
+                        name="time-interval" id="time-interval" value="200">
+                    </div>  
                 </div>
             </div>
             <button class="btn btn-success btn-block" id="start">Start</button>

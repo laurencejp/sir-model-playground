@@ -65,11 +65,12 @@
                 </div>
                 <div class="col-sm">
                     <div class="form-group">
-                        <label for="contact-infection-days">Contact Infection
-                        Days<span class="text-muted"> - The number of days a
-                        person must spend within the infection radius of an
-                        infected person to contract the virus.</span></label>
-                        <input class="form-control" type="number" name="contact-infection-days" id="contact-infection-days" value="1">
+                        <label for="infection-probability">Infection Probability
+                        <span class="text-muted"> - The probability, as a
+                        percentage, that a susceptible person has of contracting
+                        the virus per day they spend within the infection radius
+                        of an infected person.</span></label>
+                        <input class="form-control" type="number" name="infection-probability" id="infection-probability" value="60">
                     </div>
                     <div class="form-group">
                         <label for="recover-after">Recover After<span
@@ -185,7 +186,7 @@
         var citySize;
         var dailyMovement;
         var infectionRadius;
-        var contactInfectionDays;
+        var infectionProbability;
         var initialCases;
         var day = 1;
         var timer;
@@ -204,7 +205,7 @@
             citySize = parseInt(document.getElementById("city-size").value, 10);
             dailyMovement = parseInt(document.getElementById("daily-movement").value, 10);
             infectionRadius = parseInt(document.getElementById("infection-radius").value, 10);
-            contactInfectionDays = parseInt(document.getElementById("contact-infection-days").value, 10);
+            infectionProbability = parseInt(document.getElementById("infection-probability").value, 10);
             initialCases = parseInt(document.getElementById("initial-cases").value, 10);
 
             cityChart.options.scales.xAxes[0].ticks.max = citySize;
@@ -212,10 +213,10 @@
 
             for (var i = 0; i < parseInt(document.getElementById("population").value, 10); ++i) {
                 if (i < initialCases) {
-                    population.push({"compartment": 1, "infectedDays": 0, "x": Math.floor(Math.random() * citySize), "y": Math.floor(Math.random() * citySize), "contactDays": 0});
+                    population.push({"compartment": 1, "infectedDays": 0, "x": Math.floor(Math.random() * citySize), "y": Math.floor(Math.random() * citySize)});
                     cityChart.data.datasets[1].data.push({"x": population[i].x, "y": population[i].y});
                 } else {
-                    population.push({"compartment": 0, "x": Math.floor(Math.random() * citySize), "y": Math.floor(Math.random() * citySize), "contactDays": 0});
+                    population.push({"compartment": 0, "x": Math.floor(Math.random() * citySize), "y": Math.floor(Math.random() * citySize)});
                     cityChart.data.datasets[0].data.push({"x": population[i].x, "y": population[i].y});
                 }
                 
@@ -262,12 +263,9 @@
 
                     otherPeople.sort(function(a, b){return a[1] - b[1]});
                     if (otherPeople[0][1] <= infectionRadius) {
-                        population[index].contactDays += 1;
-                    } else {
-                        population[index].contactDays = 0;
-                    }
-                    if (population[index].contactDays >= contactInfectionDays) {
-                        toInfect.push(index);
+                        if (Math.floor(Math.random() * 100) < infectionProbability) {
+                            toInfect.push(index);
+                        }
                     }
                 } else if (person.compartment == 1) {
                     if (person.infectedDays >= recoverAfter) {

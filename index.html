@@ -20,11 +20,19 @@
             current day. The simulation will stop when the 'Stop' button is
             pressed or when the disease has been irradicated.</p>
         </div>
-        <div class="row">
-            <div class="col-sm">
+        <div class="row align-items-center">
+            <div class="col-sm-5">
                 <canvas id="sir-chart"></canvas>
             </div>
-            <div class="col-sm">
+            <div class="col-sm-1 text-center">
+                <p>Susceptible</p>
+                <h2 id="susceptible-count" style="color:#d4db0a;">0</h2>
+                <p>Infectious</p>
+                <h2 id="infectious-count" style="color:#b80c09">0</h2>
+                <p>Recovered</p>
+                <h2 id="recovered-count" style="color:#09b734">0</h2>
+            </div>
+            <div class="col-sm-6">
                 <canvas id="city-chart"></canvas>
             </div>
         </div>
@@ -60,8 +68,6 @@
                         <input class="form-control" type="number"
                         name="infection-radius" id="infection-radius" value="5">
                     </div>
-                    
-                    
                 </div>
                 <div class="col-sm">
                     <div class="form-group">
@@ -111,25 +117,29 @@
                 labels: [],
                 datasets: [{
                     label: 'Susceptible',
-                    fill: false,
                     backgroundColor: '#d4db0a',
-                    borderColor: '#d4db0a',
+                    borderWidth: 0,
+                    yAxisID: 'regular',
+                    showLine: false,
                     data: []
                 }, {
                     label: 'Infectious',
-                    fill: false,
                     backgroundColor: '#b80c09',
-                    borderColor: '#b80c09',
+                    borderWidth: 0,
+                    yAxisID: 'regular',
                     data: []
                 }, {
                     label: 'Recovered',
-                    fill: false,
                     backgroundColor: '#09b734',
-                    borderColor: '#09b734',
+                    borderWidth: 0,
+                    yAxisID: 'reverse',
                     data: []
                 }]
             },
             options: {
+                animation: {
+                    easing: 'linear'
+                },
                 tooltips: {
 					mode: 'index',
 					intersect: false,
@@ -143,10 +153,43 @@
                         radius: 0
                     }
                 },
-                animation: {
-                    duration: 0
+                scales: {
+                    yAxes: [{
+                        id: 'regular',
+                        type: 'linear',
+                        position: 'left',
+                        gridLines: {
+                            display: false
+                        }
+                    },{
+                        id: 'reverse',
+                        type: 'linear',
+                        position: 'right',
+                        ticks: {
+                            display: false,
+                            reverse: true,
+                            min: 0
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    }],
+                    xAxes: [{
+                        gridLines: {
+                            display: false
+                        }
+                    }]
                 }
+            },
+            plugins: [{
+                beforeDraw: function(chartInstance, easing) {
+                var ctx = chartInstance.chart.ctx;
+                ctx.fillStyle = '#d4db0a'; // your color here
+
+                var chartArea = chartInstance.chartArea;
+                ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
             }
+            }]
         });
 
         var ctx = document.getElementById('city-chart').getContext('2d');
@@ -172,7 +215,7 @@
             },
             options: {
                 animation: {
-                    duration: 0
+                    easing: 'linear'
                 },
                 tooltips: {
 					enabled: false
@@ -211,6 +254,9 @@
             cityChart.options.scales.xAxes[0].ticks.max = citySize;
             cityChart.options.scales.yAxes[0].ticks.max = citySize;
 
+            cityChart.options.animation.duration = timeInterval;
+            sirChart.options.animation.duration = timeInterval;
+
             for (var i = 0; i < parseInt(document.getElementById("population").value, 10); ++i) {
                 if (i < initialCases) {
                     population.push({"compartment": 1, "infectedDays": 0, "x": Math.floor(Math.random() * citySize), "y": Math.floor(Math.random() * citySize)});
@@ -229,11 +275,16 @@
 
             cityChart.update();
 
+            sirChart.options.scales.yAxes[1].ticks.max = population.length;
+
             sirChart.data.labels.push(0);
             sirChart.data.datasets[0].data.push(population.length - initialCases);
             sirChart.data.datasets[1].data.push(initialCases);
             sirChart.data.datasets[2].data.push(0);
             sirChart.update();
+
+            document.getElementById("susceptible-count").innerHTML = population.length - initialCases;
+            document.getElementById("infectious-count").innerHTML = initialCases;
             timer = setInterval(progress, timeInterval);
         })
 
@@ -308,6 +359,11 @@
             sirChart.data.datasets[1].data.push(count[1]);
             sirChart.data.datasets[2].data.push(count[2]);
             sirChart.update();
+
+            document.getElementById("susceptible-count").innerHTML = count[0];
+            document.getElementById("infectious-count").innerHTML = count[1];
+            document.getElementById("recovered-count").innerHTML = count[2];
+
             if (count[1] == 0) {
                 document.getElementById("start").disabled = false;
                 clearInterval(timer);

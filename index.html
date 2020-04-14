@@ -184,7 +184,7 @@
             plugins: [{
                 beforeDraw: function(chartInstance, easing) {
                 var ctx = chartInstance.chart.ctx;
-                ctx.fillStyle = '#d4db0a'; // your color here
+                ctx.fillStyle = '#d4db0a';
 
                 var chartArea = chartInstance.chartArea;
                 ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
@@ -197,20 +197,8 @@
             type: 'scatter',
             data: {
                 datasets: [{
-                    label: 'Susceptible',
-                    backgroundColor: '#d4db0a',
-                    borderColor: '#d4db0a',
-                    data: []
-                }, {
-                    label: 'Infectious',
-                    backgroundColor: '#b80c09',
-                    borderColor: '#b80c09',
-                    data: []
-                }, {
-                    label: 'Recovered',
-                    backgroundColor: '#09b734',
-                    borderColor: '#09b734',
-                    data: []
+                    data: [],
+                    pointBackgroundColor: []
                 }]
             },
             options: {
@@ -219,7 +207,10 @@
                 },
                 tooltips: {
 					enabled: false
-				}
+				},
+                legend: {
+                    display: false
+                }
             }
         });
 
@@ -240,6 +231,8 @@
             sirChart.data.datasets[0].data = [];
             sirChart.data.datasets[1].data = [];
             sirChart.data.datasets[2].data = [];
+            cityChart.data.datasets[0].data = [];
+            cityChart.data.datasets[0].pointBackgroundColor = [];
             population = [];
             day = 1;
             
@@ -260,10 +253,12 @@
             for (var i = 0; i < parseInt(document.getElementById("population").value, 10); ++i) {
                 if (i < initialCases) {
                     population.push({"compartment": 1, "infectedDays": 0, "x": Math.floor(Math.random() * citySize), "y": Math.floor(Math.random() * citySize)});
-                    cityChart.data.datasets[1].data.push({"x": population[i].x, "y": population[i].y});
+                    cityChart.data.datasets[0].data.push({"x": population[i].x, "y": population[i].y});
+                    cityChart.data.datasets[0].pointBackgroundColor.push('#b80c09');
                 } else {
                     population.push({"compartment": 0, "x": Math.floor(Math.random() * citySize), "y": Math.floor(Math.random() * citySize)});
                     cityChart.data.datasets[0].data.push({"x": population[i].x, "y": population[i].y});
+                    cityChart.data.datasets[0].pointBackgroundColor.push('#d4db0a');
                 }
                 
                 
@@ -294,10 +289,6 @@
         });
 
         function progress(){
-            cityChart.data.datasets[0].data = [];
-            cityChart.data.datasets[1].data = [];
-            cityChart.data.datasets[2].data = [];
-
             var toInfect = [];
             var toRecover = [];
             population.forEach(function(person, index){
@@ -332,12 +323,11 @@
                 } while (newX < 0 || newX >= citySize || newY < 0 || newY >= citySize)
                 population[index].x = newX;
                 population[index].y = newY;
-                if (toInfect.includes(index)) {
-                    cityChart.data.datasets[1].data.push({"x": newX, "y": newY});
+                cityChart.data.datasets[0].data[index] = {"x": newX, "y": newY};
+                if (toInfect.includes(index)) {                 
+                    cityChart.data.datasets[0].pointBackgroundColor[index] = '#b80c09';
                 } else if (toRecover.includes(index)) {
-                    cityChart.data.datasets[2].data.push({"x": newX, "y": newY});
-                } else {
-                    cityChart.data.datasets[population[index].compartment].data.push({"x": newX, "y": newY});
+                    cityChart.data.datasets[0].pointBackgroundColor[index] = '#09b734';
                 }
             });
             cityChart.update();

@@ -20,22 +20,87 @@
             current day. The simulation will stop when the 'Stop' button is
             pressed or when the disease has been irradicated.</p>
         </div>
-        <div class="row align-items-center">
-            <div class="col-sm-5">
+        <div id="chart-grid">
+            <div id="sir-chart-div">
                 <canvas id="sir-chart"></canvas>
             </div>
-            <div class="col-sm-1 text-center">
+            <div id="susceptible-count-div" class="text-center">
                 <p>Susceptible</p>
                 <h2 id="susceptible-count" style="color:#d4db0a;">0</h2>
+            </div>
+            <div id="infectious-count-div" class="text-center">
                 <p>Infectious</p>
                 <h2 id="infectious-count" style="color:#b80c09">0</h2>
+            </div>
+            <div id="recovered-count-div" class="text-center">
                 <p>Recovered</p>
                 <h2 id="recovered-count" style="color:#09b734">0</h2>
             </div>
-            <div class="col-sm-6">
+            <div id="city-chart-div">
                 <canvas id="city-chart"></canvas>
             </div>
         </div>
+        <style>
+            @media screen {
+                #chart-grid {
+                    display: grid;
+                    grid-template-columns: repeat(12, 1fr);
+                    grid-template-rows: repeat(3, 1fr);
+                    align-items: center;
+                }
+                #sir-chart-div {
+                    position: relative;
+                    grid-column: 1 / span 5;
+                    grid-row: 1 / span 3;
+                }
+                #susceptible-count-div {
+                    grid-column: 6 / span 1;
+                    grid-row: 1 / span 1;
+                }
+                #infectious-count-div {
+                    grid-column: 6 / span 1;
+                    grid-row: 2 / span 1;
+                }
+                #recovered-count-div {
+                    grid-column: 6 / span 1;
+                    grid-row: 3 / span 1;
+                }
+                #city-chart-div {
+                    position: relative;
+                    grid-column: 7 / span 6;
+                    grid-row: 1 / span 3;
+                }
+            }
+            @media screen and (max-width: 900px) {
+                #chart-grid {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    grid-template-rows: repeat(3, minmax(min-content, max-content));
+                    align-items: center;
+                }
+                #sir-chart-div {
+                    grid-column: 1 / span 3;
+                    grid-row: 1 / span 1;
+                }
+                #susceptible-count-div {
+                    grid-column: 1 / span 1;
+                    grid-row: 2 / span 1;
+                }
+                #infectious-count-div {
+                    grid-column: 2 / span 1;
+                    grid-row: 2 / span 1;
+                }
+                #recovered-count-div {
+                    grid-column: 3 / span 1;
+                    grid-row: 2 / span 1;
+                }
+                #city-chart-div {
+                    grid-column: 1 / span 3;
+                    grid-row: 3 / span 1;
+                }
+            }
+            
+        </style>
         <div class="container">
             <div class="row">
                 <div class="col-sm">
@@ -109,6 +174,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
         <script>
+        window.onresize = function(){ location.reload(); }
         var ctx = document.getElementById('sir-chart').getContext('2d');
         //Chart.defaults.global.elements.point.radius = 0;
         var sirChart = new Chart(ctx, {
@@ -210,6 +276,42 @@
 				},
                 legend: {
                     display: false
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            display: false
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    },{
+                        id: 'right',
+                        position: 'right',
+                        ticks: {
+                            display: false
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            display: false
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    },{
+                        id: 'top',
+                        position: 'top',
+                        ticks: {
+                            display: false
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    }]
                 }
             }
         });

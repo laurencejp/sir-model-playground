@@ -39,17 +39,18 @@
             <div id="city-chart-div">
                 <canvas id="city-chart"></canvas>
             </div>
+            <button class="btn btn-success m-2" id="start">Start</button>
+            <button class="btn btn-danger m-2" id="stop">Stop</button>
         </div>
         <style>
             @media screen {
                 #chart-grid {
                     display: grid;
                     grid-template-columns: repeat(12, 1fr);
-                    grid-template-rows: repeat(3, 1fr);
+                    grid-template-rows: repeat(4, 1fr);
                     align-items: center;
                 }
                 #sir-chart-div {
-                    position: relative;
                     grid-column: 1 / span 5;
                     grid-row: 1 / span 3;
                 }
@@ -66,42 +67,77 @@
                     grid-row: 3 / span 1;
                 }
                 #city-chart-div {
-                    position: relative;
                     grid-column: 7 / span 6;
                     grid-row: 1 / span 3;
+                }
+                #start {
+                    grid-column: 1 / span 6;
+                    grid-row: 4 / span 1;
+                    justify-self: end;
+                    width: 30%;
+                    height: 30%;
+                    min-height: 50px;
+                    min-width: 100px;
+                }
+                #stop {
+                    grid-column: 7 / span 6;
+                    grid-row: 4 / span 1;
+                    justify-self: start;
+                    width: 30%;
+                    height: 30%;
+                    min-height: 50px;
+                    min-width: 100px;
                 }
             }
             @media screen and (max-width: 900px) {
                 #chart-grid {
                     display: grid;
-                    grid-template-columns: repeat(3, 1fr);
-                    grid-template-rows: repeat(3, minmax(min-content, max-content));
+                    grid-template-columns: repeat(6, 1fr);
+                    grid-template-rows: repeat(4, minmax(min-content, max-content));
                     align-items: center;
                 }
                 #sir-chart-div {
-                    grid-column: 1 / span 3;
+                    grid-column: 1 / span 6;
                     grid-row: 1 / span 1;
                 }
                 #susceptible-count-div {
-                    grid-column: 1 / span 1;
+                    grid-column: 1 / span 2;
                     grid-row: 2 / span 1;
                 }
                 #infectious-count-div {
-                    grid-column: 2 / span 1;
+                    grid-column: 3 / span 2;
                     grid-row: 2 / span 1;
                 }
                 #recovered-count-div {
-                    grid-column: 3 / span 1;
+                    grid-column: 5 / span 2;
                     grid-row: 2 / span 1;
                 }
                 #city-chart-div {
-                    grid-column: 1 / span 3;
+                    grid-column: 1 / span 6;
                     grid-row: 3 / span 1;
+                }
+                #start {
+                    grid-column: 1 / span 3;
+                    grid-row: 4 / span 1;
+                    justify-self: end;
+                    width: 30%;
+                    height: 30%;
+                    min-height: 50px;
+                    min-width: 100px;
+                }
+                #stop {
+                    grid-column: 4 / span 3;
+                    grid-row: 4 / span 1;
+                    justify-self: start;
+                    width: 30%;
+                    height: 30%;
+                    min-height: 50px;
+                    min-width: 100px;
                 }
             }
             
         </style>
-        <div class="container">
+        <div class="container"> 
             <div class="row">
                 <div class="col-sm">
                     <div class="form-group">
@@ -168,8 +204,6 @@
                     </div>  
                 </div>
             </div>
-            <button class="btn btn-success btn-block" id="start">Start</button>
-            <button class="btn btn-danger btn-block" id="stop">Stop</button>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
